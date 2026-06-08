@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 <title>Jimdependance</title>
-<meta name="description" content="Your daily training system — sunrise, cardio, shoulder-safe strength, weight.">
 <meta name="theme-color" content="#0a0b0d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -348,20 +347,45 @@ const todayStr=()=>new Date().toISOString().slice(0,10);
 const daysBetween=(a,b)=>Math.round((new Date(b)-new Date(a))/86400000);
 
 /* ============================ BOOT ============================ */
+function escapeHtml(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function showFatal(err){
+  try{
+    const m=(err && (err.stack||err.message)) || String(err||'Unknown error');
+    const r=document.getElementById('app-root');
+    if(r) r.innerHTML='<div style="padding:48px 24px;font-family:Sora,sans-serif;color:#f3f4f2">'
+      +'<div style="font-family:Bebas Neue,sans-serif;font-size:30px;color:#d7ff3e;letter-spacing:1px">Something tripped</div>'
+      +'<p style="color:#7f8794;font-size:14px;line-height:1.5;margin:8px 0 16px">The app hit an error while loading. Copy this and send it to get it fixed:</p>'
+      +'<pre style="white-space:pre-wrap;word-break:break-word;background:#121418;border:1px solid #23272f;border-radius:12px;padding:14px;font-size:12px;color:#ff8a5a;max-height:50vh;overflow:auto">'+escapeHtml(m)+'</pre>'
+      +'<button onclick="location.reload()" style="margin-top:16px;width:100%;background:#d7ff3e;color:#0a0b0d;border:none;padding:16px;border-radius:14px;font-family:Sora,sans-serif;font-weight:700;font-size:15px">Reload</button></div>';
+  }catch(_){}
+}
+window.addEventListener('error', e=>{ if(document.querySelector('.loading')) showFatal(e.error||e.message); });
+window.addEventListener('unhandledrejection', e=>{ if(document.querySelector('.loading')) showFatal(e.reason); });
+
 (async function boot(){
-  root.innerHTML='<div class="loading">JIMDEPENDANCE</div>';
-  S.profile=await DB.get('profile',null);
-  S.history=await DB.get('history',[]);
-  S.cardio=await DB.get('cardio',[]);
-  S.weights=await DB.get('weights',[]);
-  S.rotation=await DB.get('rotation',0);
-  if(!S.profile){
-    S.profile={level:'intermediate', days:4, goals:['arms','core'], shoulderCare:true, travel:false,
-      units:'kg', location:{lat:-37.8136, lon:144.9631, label:'Melbourne'}, created:todayStr()};
-    await DB.set('profile',S.profile);
-  }
-  renderApp('today');
-  refineLocation();
+  try{
+    root.innerHTML='<div class="loading">JIMDEPENDANCE</div>';
+    S.profile=await DB.get('profile',null);
+    S.history=await DB.get('history',[]);
+    S.cardio=await DB.get('cardio',[]);
+    S.weights=await DB.get('weights',[]);
+    S.rotation=await DB.get('rotation',0);
+    if(!S.profile || typeof S.profile!=='object'){
+      S.profile={level:'intermediate', days:4, goals:['arms','core'], shoulderCare:true, travel:false,
+        units:'kg', location:{lat:-37.8136, lon:144.9631, label:'Melbourne'}, created:todayStr()};
+      await DB.set('profile',S.profile);
+    }
+    // self-heal older/partial saved profiles so a missing field can't crash render
+    const d={level:'intermediate',days:4,goals:['arms','core'],shoulderCare:true,travel:false,units:'kg'};
+    for(const k in d){ if(S.profile[k]===undefined) S.profile[k]=d[k]; }
+    if(!S.profile.location || typeof S.profile.location.lat!=='number') S.profile.location={lat:-37.8136,lon:144.9631,label:'Melbourne'};
+    if(!Array.isArray(S.history)) S.history=[];
+    if(!Array.isArray(S.cardio)) S.cardio=[];
+    if(!Array.isArray(S.weights)) S.weights=[];
+    if(typeof S.rotation!=='number') S.rotation=0;
+    renderApp('today');
+    refineLocation();
+  }catch(err){ showFatal(err); }
 })();
 
 function refineLocation(){
