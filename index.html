@@ -132,6 +132,10 @@
   .exdia-wrap{margin:0 0 18px}
   .exdia{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:14px;background:#0e1014}
   .x-cue{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:13px;color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:20px}
+  .repbig{display:flex;align-items:baseline;justify-content:center;gap:10px;margin:10px 0 2px}
+  .rep-n{font-family:'Bebas Neue';font-size:88px;line-height:.82;color:var(--accent)}
+  .rep-u{font-size:15px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+  .rep-sets{text-align:center;color:var(--muted-2);font-size:12.5px;letter-spacing:.3px;margin-bottom:14px}
   .setlist{display:flex;flex-direction:column;gap:9px;margin-bottom:auto}
   .setrow{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
   .setrow.done{border-color:var(--accent);background:rgba(215,255,62,.06)}
@@ -174,6 +178,8 @@
 
   .exrow.tappable,.hrow.tappable{cursor:pointer}
   .exrow .chev{width:15px;height:15px;stroke:var(--muted-2);fill:none;stroke-width:2.5;flex-shrink:0}
+  .routine .tag{color:var(--accent)}
+  .routine .ttl{font-size:26px}
   .hint2{color:var(--muted-2);font-size:11.5px;text-align:center;margin-top:10px}
   .trk{display:flex;flex-direction:column}
   .trkbig{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:18px}
@@ -257,6 +263,10 @@ const EX = {
   mtclimb:{name:'Mountain Climbers', type:'hold', cue:'Plank position, drive your knees alternately at a steady pace. Count the seconds.', t:{b:[3,25],i:[3,35],a:[4,45]}},
   hk:{name:'High Knees', type:'hold', cue:'Jog on the spot, knees to hip height, quick light feet. Great low-impact conditioning.', t:{b:[3,25],i:[3,35],a:[3,45]}},
   jacks:{name:'Jumping Jacks', type:'hold', cue:'Full range, steady rhythm. Keep the heart rate up.', t:{b:[3,30],i:[3,40],a:[3,50]}},
+  standing_crunch:{name:'Standing Knee-to-Elbow', type:'each', cue:'Stand tall, hands by your head. Drive one knee up while you crunch the opposite elbow down to meet it, then switch sides. Squeeze the abs at the top.', t:{b:[3,10],i:[3,12],a:[3,16]}},
+  standing_twist:{name:'Standing Twists', type:'each', cue:'Feet planted, fists up by your chin, elbows out. Rotate your torso side to side, turning from the waist \u2014 not just the arms.', t:{b:[3,15],i:[3,20],a:[3,25]}},
+  standing_toetouch:{name:'Standing Toe Touch', type:'each', cue:'Stand tall, raise one straight leg up in front and reach the opposite hand toward your toes. Lower under control and alternate.', t:{b:[3,10],i:[3,12],a:[3,16]}},
+  kneeling_back:{name:'Kneeling Back Extension', type:'reps', cue:'Kneel with hands behind your head. Hinge forward at the hips, then squeeze your back and glutes to lift your chest tall again. Slow and controlled \u2014 no jerking.', t:{b:[3,12],i:[3,15],a:[3,18]}},
   arm_circles:{name:'Arm Circles', type:'reps', cue:'Arms out to the sides, make small circles forward, then backward. Keep them small and controlled \u2014 this is to warm the shoulder, not stretch it.', t:{b:[1,15],i:[1,20],a:[1,20]}},
   leg_swings:{name:'Leg Swings', type:'each', cue:'Hold a wall for balance, swing one leg forward and back in a relaxed, controlled arc. Then switch sides.', t:{b:[1,10],i:[1,12],a:[1,12]}},
   torso_twist:{name:'Standing Torso Twists', type:'each', cue:'Feet planted, arms relaxed, rotate your upper body gently side to side to loosen the spine.', t:{b:[1,10],i:[1,12],a:[1,12]}},
@@ -274,34 +284,33 @@ const COOLDOWN_STRETCH = ['chest_stretch','hamstring','quad_stretch','childs_pos
 
 const DAYS = {
   'Push & Triceps':{sub:'Chest, shoulders, triceps \u2014 shoulder-safe pressing', main:['incline_pushup','knee_pushup','pushup','diamond']},
-  'Pull & Biceps':{sub:'Back & biceps \u2014 horizontal pulling', main:['towelrow','towel_curl','superman']},
-  'Legs & Core':{sub:'Quads, glutes, calves', main:['squat','lunge','glute','calf','wall_sit']},
-  'Abs & Arms':{sub:'Six-pack focus plus arm volume', main:['crunch','bicycle','reverse_crunch','plank','towel_curl','incline_pushup']},
-  'Full Body':{sub:'Everything, balanced', main:['incline_pushup','towelrow','squat','glute','hollow','lunge']}
+  'Pull & Biceps':{sub:'Back & biceps \u2014 horizontal pulling', main:['towelrow','kneeling_back','towel_curl','superman']},
+  'Legs & Core':{sub:'Quads, glutes, calves & core', main:['squat','lunge','glute','calf','legraise','standing_crunch']},
+  'Abs & Core':{sub:'Standing abs circuit + floor core', main:['standing_crunch','standing_toetouch','standing_twist','crunch','legraise','plank','mtclimb']},
+  'Full Body':{sub:'Beginner full-body circuit', main:['incline_pushup','squat','mtclimb','legraise','standing_crunch','plank']}
 };
 const SPLITS = {
   3:['Push & Triceps','Pull & Biceps','Legs & Core'],
-  4:['Push & Triceps','Pull & Biceps','Legs & Core','Abs & Arms'],
-  5:['Push & Triceps','Pull & Biceps','Legs & Core','Abs & Arms','Full Body']
+  4:['Push & Triceps','Pull & Biceps','Legs & Core','Abs & Core'],
+  5:['Push & Triceps','Pull & Biceps','Legs & Core','Abs & Core','Full Body']
 };
 const TRAVEL = {
   'Hotel Upper':{sub:'Push, pull & core in a hotel room', main:['incline_pushup','towelrow','towel_curl','deadbug','plank']},
   'Hotel Lower':{sub:'Legs & glutes, quiet & low-impact', main:['squat','lunge','bulgarian','glute','wall_sit','calf']},
-  'Hotel Full':{sub:'Full body, no gear needed', main:['incline_pushup','towelrow','squat','glute','deadbug','hollow']}
+  'Hotel Full':{sub:'Full body, no gear needed', main:['incline_pushup','squat','standing_crunch','legraise','plank','mtclimb']}
 };
 const TRAVEL_SPLIT = ['Hotel Upper','Hotel Lower','Hotel Full'];
 
 const FINISH = {
   arms:['towel_curl','incline_pushup','diamond'],
-  core:['hollow','legraise','deadbug','crunch','plank'],
-  conditioning:['hk','jacks','mtclimb']
+  core:['standing_crunch','standing_toetouch','standing_twist','legraise','plank','crunch','hollow'],
+  conditioning:['mtclimb','hk','jacks']
 };
-const SHOULDER_LOAD = new Set(['pushup','diamond','mtclimb','jacks','wall_pushup']);
+const SHOULDER_LOAD = new Set(['jacks']);
 const ALT = {
-  pushup:['knee_pushup','incline_pushup'], diamond:['incline_pushup','knee_pushup'],
-  mtclimb:['deadbug','hollow'], jacks:['hk'], wall_pushup:['incline_pushup']
+  jacks:['hk']
 };
-const TOPUP = ['squat','glute','hollow','deadbug','lunge','birddog','calf','legraise','ytw','superman','incline_pushup','towelrow'];
+const TOPUP = ['squat','glute','legraise','standing_crunch','standing_toetouch','plank','mtclimb','lunge','kneeling_back','deadbug','calf','superman'];
 
 /* ============================ DIAGRAMS ============================ */
 const _ACC='#d7ff3e',_JOINT='#aee01f',_GHOST='#3f4654',_ARW='#7f8a9c';
@@ -372,7 +381,11 @@ const DIA={
   quad_stretch:figSVG({head:[100,42,9],sh:[100,56],el:[106,72],wr:[112,74],hi:[100,86],kn:[100,108],an:[100,118],kn2:[110,90],an2:[112,72]},_gr()),
   hip_flexor:figSVG({head:[96,46,9],sh:[96,58],el:[108,72],wr:[120,76],hi:[96,86],kn:[126,96],an:[126,118],kn2:[72,108],an2:[50,116]},_gr()),
   childs_pose:figSVG({head:[58,98,8],sh:[78,98],el:[58,104],wr:[36,108],hi:[122,96],kn:[146,110],an:[166,110]},_gr()),
-  calf_stretch:figSVG({head:[72,52,9],sh:[82,62],el:[112,62],wr:[150,64],hi:[80,90],kn:[102,100],an:[112,118],kn2:[60,104],an2:[40,118]},_gr()+_bV(162,28,118))
+  calf_stretch:figSVG({head:[72,52,9],sh:[82,62],el:[112,62],wr:[150,64],hi:[80,90],kn:[102,100],an:[112,118],kn2:[60,104],an2:[40,118]},_gr()+_bV(162,28,118)),
+  standing_crunch:figSVG({head:[98,48,9],sh:[98,60],el:[112,74],wr:[122,84],hi:[100,80],kn:[100,100],an:[100,116],kn2:[126,86],an2:[148,92]},_gr()),
+  standing_twist:figSVG({head:[100,34,9],sh:[100,48],el:[112,58],wr:[104,48],hi:[100,76],kn:[100,98],an:[100,116],el2:[112,60],wr2:[106,50]},_gr()+_twist),
+  standing_toetouch:figSVG({head:[96,52,9],sh:[96,62],el:[112,70],wr:[140,80],hi:[100,78],kn:[100,100],an:[100,116],kn2:[126,80],an2:[152,76]},_gr()),
+  kneeling_back:figSVG({head:[100,52,9],sh:[100,66],el:[88,60],wr:[104,54],hi:[100,90],kn:[100,108],an:[124,116],el2:[112,60],wr2:[96,54]},_gr())
 };
 const EXDIA={scap_squeeze:'stand',ext_rot_iso:'rotiso',int_rot_iso:'rotiso',prone_cobra:'superman',wall_slide:'wallslide',ytw:'ytw',
   wall_pushup:'wallpush',incline_pushup:'pushup',knee_pushup:'pushup',pushup:'pushup',diamond:'pushup',
@@ -381,8 +394,46 @@ const EXDIA={scap_squeeze:'stand',ext_rot_iso:'rotiso',int_rot_iso:'rotiso',pron
   crunch:'crunch',reverse_crunch:'legraise',bicycle:'deadbug',flutter:'legraise',hollow:'hollow',legraise:'legraise',
   plank:'plank',deadbug:'deadbug',birddog:'birddog',mtclimb:'mtclimb',hk:'cardio',jacks:'cardio',
   arm_circles:'arm_circles',leg_swings:'leg_swings',torso_twist:'torso_twist',chest_stretch:'chest_stretch',
-  hamstring:'hamstring',quad_stretch:'quad_stretch',hip_flexor:'hip_flexor',childs_pose:'childs_pose',calf_stretch:'calf_stretch'};
+  hamstring:'hamstring',quad_stretch:'quad_stretch',hip_flexor:'hip_flexor',childs_pose:'childs_pose',calf_stretch:'calf_stretch',
+  standing_crunch:'standing_crunch',standing_twist:'standing_twist',standing_toetouch:'standing_toetouch',kneeling_back:'kneeling_back'};
 const diaFor=id=>DIA[EXDIA[id]]||'';
+/* animated demos: figure loops between start & end positions of the movement */
+const ANIM={
+  pushup:{s:{head:[44,78,9],sh:[70,80],el:[80,100],wr:[74,120],hi:[124,86],kn:[158,96],an:[190,108]},e:{head:[44,92,9],sh:[70,94],el:[86,110],wr:[74,120],hi:[124,100],kn:[158,108],an:[190,118]},x:_gr(122)},
+  squat:{s:{head:[98,30,9],sh:[98,42],el:[104,60],wr:[110,74],hi:[98,72],kn:[98,96],an:[98,116]},e:{head:[96,46,9],sh:[96,58],el:[110,70],wr:[120,62],hi:[94,88],kn:[70,94],an:[92,116]},x:_gr()},
+  lunge:{s:{head:[100,30,9],sh:[100,42],el:[110,58],wr:[118,70],hi:[100,72],kn:[100,96],an:[100,116],kn2:[118,96],an2:[120,116]},e:{head:[100,42,9],sh:[100,54],el:[112,68],wr:[120,62],hi:[100,84],kn:[100,102],an:[100,116],kn2:[140,108],an2:[158,116]},x:_gr()},
+  glute:{s:{head:[52,114,8],sh:[70,114],el:[60,108],wr:[50,114],hi:[112,114],kn:[150,108],an:[176,116]},e:{head:[52,112,8],sh:[70,112],el:[60,104],wr:[50,112],hi:[112,84],kn:[142,98],an:[168,116]},x:_gr()},
+  row:{s:{head:[126,86,9],sh:[110,92],el:[122,68],wr:[140,48],hi:[80,102],kn:[56,111],an:[36,117]},e:{head:[140,80,9],sh:[122,86],el:[120,62],wr:[122,44],hi:[84,100],kn:[58,110],an:[36,116]},x:_gr()+_bV(150,28,118)},
+  legraise:{s:{head:[54,112,8],sh:[72,114],el:[60,116],wr:[48,116],hi:[112,114],kn:[150,112],an:[182,110]},e:{head:[54,112,8],sh:[72,114],el:[60,116],wr:[48,116],hi:[112,114],kn:[114,88],an:[116,60]},x:_gr()},
+  crunch:{s:{head:[54,110,9],sh:[74,112],el:[78,104],wr:[100,98],hi:[120,110],kn:[140,90],an:[118,108]},e:{head:[60,98,9],sh:[78,102],el:[80,92],wr:[104,86],hi:[120,108],kn:[140,88],an:[118,106]},x:_gr()},
+  curl:{s:{head:[100,40,9],sh:[100,54],el:[100,80],wr:[112,98],hi:[100,88],kn:[100,108],an:[100,118]},e:{head:[100,40,9],sh:[100,54],el:[100,78],wr:[120,54],hi:[100,88],kn:[100,108],an:[100,118]},x:_gr()},
+  stepup:{s:{head:[80,52,9],sh:[80,66],el:[92,80],wr:[100,74],hi:[84,94],kn:[82,108],an:[80,118],kn2:[120,92],an2:[140,97]},e:{head:[80,40,9],sh:[80,54],el:[92,68],wr:[100,62],hi:[84,82],kn:[120,90],an:[140,96],kn2:[80,104],an2:[78,118]},x:_box(130,96,172,118)+_gr()},
+  standing_crunch:{s:{head:[100,32,9],sh:[100,46],el:[114,44],wr:[104,38],hi:[100,74],kn:[100,98],an:[100,116],kn2:[104,98],an2:[104,116]},e:{head:[98,48,9],sh:[98,60],el:[112,74],wr:[122,84],hi:[100,80],kn:[100,100],an:[100,116],kn2:[126,86],an2:[148,92]},x:_gr()},
+  standing_toetouch:{s:{head:[100,30,9],sh:[100,44],el:[100,60],wr:[100,74],hi:[100,76],kn:[100,98],an:[100,116],kn2:[104,98],an2:[104,116]},e:{head:[96,52,9],sh:[96,62],el:[112,70],wr:[140,80],hi:[100,78],kn:[100,100],an:[100,116],kn2:[126,80],an2:[152,76]},x:_gr()},
+  kneeling_back:{s:{head:[64,70,9],sh:[78,72],el:[64,64],wr:[80,60],hi:[100,88],kn:[100,108],an:[124,116],el2:[64,66],wr2:[82,62]},e:{head:[100,52,9],sh:[100,66],el:[88,60],wr:[104,54],hi:[100,90],kn:[100,108],an:[124,116],el2:[112,60],wr2:[96,54]},x:_gr()}
+};
+function animSVG(s,e,extras=''){
+  const dur='1.7s',kt='0;0.5;1',ks='.42 0 .58 1;.42 0 .58 1';
+  const A=(at,v)=>`<animate attributeName="${at}" values="${v}" dur="${dur}" repeatCount="indefinite" keyTimes="${kt}" calcMode="spline" keySplines="${ks}"/>`;
+  const tri=(k,i)=>`${s[k][i]};${e[k][i]};${s[k][i]}`;
+  const line=(j1,j2,w,c)=>`<line stroke="${c}" stroke-width="${w}" stroke-linecap="round" x1="${s[j1][0]}" y1="${s[j1][1]}" x2="${s[j2][0]}" y2="${s[j2][1]}">${A('x1',tri(j1,0))}${A('y1',tri(j1,1))}${A('x2',tri(j2,0))}${A('y2',tri(j2,1))}</line>`;
+  const circ=(k,r,c)=>`<circle r="${r}" fill="${c}" cx="${s[k][0]}" cy="${s[k][1]}">${A('cx',tri(k,0))}${A('cy',tri(k,1))}</circle>`;
+  const segs=[['sh','hi'],['sh','el'],['el','wr'],['hi','kn'],['kn','an']];
+  if(e.kn2&&s.kn2) segs.push(['hi','kn2'],['kn2','an2']);
+  if(e.el2&&s.el2) segs.push(['sh','el2'],['el2','wr2']);
+  let o=`<ellipse cx="${((e.hi[0]+e.an[0])/2).toFixed(0)}" cy="121" rx="46" ry="5" fill="#000" opacity=".28"/>`+extras;
+  o+=line('head','sh',7,'#d7ff3e');
+  segs.forEach(g=>o+=line(g[0],g[1],8.5,'#d7ff3e'));
+  ['sh','el','hi','kn'].forEach(j=>o+=circ(j,3.4,'#aee01f'));
+  if(e.kn2&&s.kn2) o+=circ('kn2',3.4,'#aee01f');
+  if(e.el2&&s.el2) o+=circ('el2',3.4,'#aee01f');
+  o+=circ('wr',5,'#d7ff3e')+circ('an',5,'#d7ff3e');
+  if(e.wr2&&s.wr2) o+=circ('wr2',5,'#d7ff3e');
+  if(e.an2&&s.an2) o+=circ('an2',5,'#d7ff3e');
+  o+=circ('head',(e.head[2]||9),'#d7ff3e');
+  return `<svg viewBox="0 0 220 130" class="exdia" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><rect width="220" height="130" rx="14" fill="#0e1014"/>${o}</svg>`;
+}
+function animDia(id){ const k=EXDIA[id]; const a=ANIM[k]; return a?animSVG(a.s,a.e,a.x):(DIA[k]||''); }
 
 /* ============================ STATE ============================ */
 let S={profile:null, history:[], cardio:[], weights:[], rotation:0};
@@ -433,7 +484,14 @@ window.addEventListener('unhandledrejection', e=>{ if(document.querySelector('.l
     if(typeof S.rotation!=='number') S.rotation=0;
     renderApp('today');
     refineLocation();
-    try{ const at=await DB.get('activeTrack',null); if(at && at.date===todayStr() && (at.dist>0||at.elapsed>15000)) offerResume(at); else if(at) await DB.set('activeTrack',null); }catch(e){}
+    try{
+      const aw=await DB.get('activeWorkout',null);
+      if(aw && aw.date===todayStr() && Array.isArray(aw.ex) && aw.ex.length){ offerResumeWorkout(aw); }
+      else{ if(aw) await DB.set('activeWorkout',null);
+        const at=await DB.get('activeTrack',null);
+        if(at && at.date===todayStr() && (at.dist>0||at.elapsed>15000)) offerResume(at); else if(at) await DB.set('activeTrack',null);
+      }
+    }catch(e){}
   }catch(err){ showFatal(err); }
 })();
 
@@ -483,6 +541,40 @@ function buildSession(){
   return list;
 }
 
+/* ===== FIXED ROUTINES (don't change; pick one and repeat) ===== */
+const ROUTINES = {
+  arms: { name:'Arms Builder', focus:'Biceps & triceps', sub:'Build arm size \u2014 push & curl volume', emoji:'\uD83D\uDCAA',
+    main:[['incline_pushup',4,15],['diamond',3,12],['towelrow',4,12],['towel_curl',4,15],['knee_pushup',3,15],['superman',3,12]],
+    core:[['plank',3,45],['standing_crunch',3,16]] },
+  abs: { name:'Abs & Waist', focus:'Core & waistline', sub:'Flatten & define \u2014 core + fat-burn', emoji:'\uD83D\uDD25',
+    main:[['standing_crunch',3,16],['mtclimb',4,40],['legraise',4,15],['reverse_crunch',3,15],['bicycle',3,20],['standing_twist',3,25]],
+    core:[['plank',3,45],['hk',3,45]] },
+  combo: { name:'Arms & Abs', focus:'Full session', sub:'Both goals in one 45-min hit', emoji:'\u26A1',
+    main:[['incline_pushup',3,15],['towel_curl',3,15],['diamond',3,12],['towelrow',3,12],['legraise',3,15],['mtclimb',3,40]],
+    core:[['standing_crunch',3,16],['plank',3,45]] }
+};
+function mkExFixed(id, sets, target, tag=''){
+  const e=EX[id];
+  return {id, name:e.name, type:e.type, cue:e.cue, sets, target, tag,
+    log:Array.from({length:sets},()=>({val:target, done:false}))};
+}
+function buildRoutine(key){
+  const r=ROUTINES[key]; const used=new Set(), list=[];
+  const takeStd=(arr,tag)=>arr.forEach(id=>{ if(EX[id]&&!used.has(id)){ used.add(id); list.push(mkEx(id,tag)); } });
+  const takeFix=(triples,tag)=>triples.forEach(t=>{ if(EX[t[0]]&&!used.has(t[0])){ used.add(t[0]); list.push(mkExFixed(t[0],t[1],t[2],tag)); } });
+  takeStd(WARMUP_STRETCH,'warmup');
+  takeStd(SHOULDER_WARM,'shoulder');
+  takeFix(r.main,'');
+  takeFix(r.core,'focus');
+  takeStd(COOLDOWN_STRETCH,'cooldown');
+  return list;
+}
+function startRoutine(key){
+  const r=ROUTINES[key];
+  active={type:r.name, ex:buildRoutine(key), i:0, started:Date.now(), date:todayStr()};
+  wakeAcquire(); persistWorkout(); renderWorkout();
+}
+
 /* ============================ APP SHELL ============================ */
 function renderApp(tab){
   const screens={today:screenToday, weight:screenWeight, progress:screenProgress, settings:screenSettings};
@@ -500,7 +592,8 @@ function tabBar(active){
 }
 function bindTabs(){ root.querySelectorAll('.tab').forEach(b=>b.onclick=()=>renderApp(b.dataset.tab)); }
 function bindScreen(tab){
-  if(tab==='today'){ if($('startBtn'))$('startBtn').onclick=startWorkout; if($('logMove'))$('logMove').onclick=openCardio; if($('quickW'))$('quickW').onclick=()=>renderApp('weight');
+  if(tab==='today'){ if($('logMove'))$('logMove').onclick=openCardio; if($('quickW'))$('quickW').onclick=()=>renderApp('weight');
+    root.querySelectorAll('[data-routine]').forEach(b=>b.onclick=()=>startRoutine(b.dataset.routine));
     root.querySelectorAll('.exrow[data-ex]').forEach(r=>r.onclick=()=>openExDetail(r.dataset.ex)); }
   if(tab==='weight') bindWeight();
   if(tab==='settings') bindSettings();
@@ -513,7 +606,7 @@ function openExDetail(id){
   ov.innerHTML=`<div class="sheet">
     <h3>${e.name}</h3>
     <div class="x-target" style="margin:2px 0 14px">${sets} sets \u00B7 ${tl}</div>
-    <div class="exdia-wrap">${diaFor(id)}</div>
+    <div class="exdia-wrap">${animDia(id)}</div>
     <div class="x-cue">${e.cue}</div>
     <button class="btn btn-ghost" id="exClose">Close</button>
   </div>`;
@@ -539,9 +632,6 @@ function cardioPlan(){
 function screenToday(){
   const loc=S.profile.location;
   const st=sunTimes(new Date(), loc.lat, loc.lon);
-  const {type,def,idx,total}=strengthSplit();
-  const ex=buildSession();
-  const sets=ex.reduce((a,e)=>a+e.sets,0);
   const greeting=(()=>{const h=new Date().getHours();return h<12?'Good morning':h<18?'Afternoon':'Evening';})();
   const cardioDone=S.cardio.some(c=>c.date===todayStr());
   const strengthDone=S.history.some(h=>h.date===todayStr());
@@ -573,16 +663,21 @@ function screenToday(){
       <button class="btn ${cardioDone?'btn-ghost':'btn-primary'}" id="logMove">${cardioDone?'Log another':'Log walk / run'}</button>
     </div>
 
-    <div class="card block ${strengthDone?'done':''} stack">
-      ${strengthDone?'<div class="donecheck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>':''}
-      <div class="tag">\uD83D\uDCAA Strength \u00B7 ${S.profile.travel?'travel mode':`day ${idx+1} of ${total}`}</div>
-      <div class="ttl">${type}</div>
-      <div class="sub">${def.sub}</div>
-      <div class="chips"><div class="chip"><b>${ex.length}</b> moves</div><div class="chip"><b>${sets}</b> sets</div><div class="chip">~<b>${Math.max(20,Math.round(sets*2.2))}</b> min</div></div>
-      <div class="exlist">${ex.map((e,i)=>`<div class="exrow tappable" data-ex="${e.id}"><div class="idx">${i+1}</div><div class="nm">${e.name}${e.tag==='shoulder'?'<span class="finbadge sh">SHOULDER</span>':e.tag==='warmup'?'<span class="finbadge wu">WARM-UP</span>':e.tag==='cooldown'?'<span class="finbadge cd">COOL-DOWN</span>':e.tag==='focus'?'<span class="finbadge">FOCUS</span>':''}</div><div class="tg">${e.sets}\u00D7${e.type==='hold'?e.target+'s':e.type==='each'?e.target+'/s':e.target}</div><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>`).join('')}</div>
+    <div class="section-h"><div class="h">Pick your workout</div>${strengthDone?'<div class="donecheck" style="position:static;width:22px;height:22px"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>':''}</div>
+    <div class="hint2" style="margin:-2px 0 12px">Same moves every time \u2014 pick one, it walks you through. Each adds a warm-up and cooldown stretch automatically.</div>
+    ${Object.entries(ROUTINES).map(([key,r])=>{
+      const moves=[...r.main,...r.core];
+      const totalSets=moves.reduce((a,m)=>a+m[1],0);
+      const est=Math.round(totalSets*1.5)+9;
+      return `<div class="card block routine stack">
+      <div class="tag">${r.emoji} ${r.focus}</div>
+      <div class="ttl">${r.name}</div>
+      <div class="sub">${r.sub}</div>
+      <div class="chips"><div class="chip"><b>${moves.length}</b> moves</div><div class="chip">~<b>${est}</b> min</div><div class="chip">+ warm-up & stretch</div></div>
+      <div class="exlist">${moves.map((m,i)=>{const e=EX[m[0]];return `<div class="exrow tappable" data-ex="${m[0]}"><div class="idx">${i+1}</div><div class="nm">${e.name}</div><div class="tg">${m[1]}\u00D7${e.type==='hold'?m[2]+'s':e.type==='each'?m[2]+'/s':m[2]}</div><svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>`;}).join('')}</div>
       <div class="hint2">Tap any move to see how it\u2019s done</div>
-      <button class="btn btn-primary btn-lg" id="startBtn" style="margin-top:14px">Start strength \u2192</button>
-    </div>
+      <button class="btn btn-primary btn-lg" data-routine="${key}" style="margin-top:14px">Start ${r.name} \u2192</button>
+    </div>`;}).join('')}
 
     <div class="card block stack">
       <div class="tag">\u2696 Daily weigh-in</div>
@@ -631,9 +726,11 @@ let track=null;
 function haversine(a,b){ const R=6371,r=Math.PI/180; const dLa=(b[0]-a[0])*r,dLo=(b[1]-a[1])*r; const la1=a[0]*r,la2=b[0]*r; const h=Math.sin(dLa/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dLo/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
 const fmtClock=ms=>{ const s=Math.floor(ms/1000); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; };
 async function persistTrack(){ if(track) await DB.set('activeTrack',{kind:track.kind,dist:track.dist,elapsed:track.elapsed,last:track.last,date:track.date,ts:Date.now()}); }
-async function reqWake(){ try{ if('wakeLock' in navigator){ track.wake=await navigator.wakeLock.request('screen'); } }catch(e){} }
-function relWake(){ try{ if(track&&track.wake){ track.wake.release(); track.wake=null; } }catch(e){} }
-function onVisible(){ if(track && !track.paused && document.visibilityState==='visible') reqWake(); }
+/* shared screen wake-lock — keeps the screen on during workouts and walks so it can't time out & reset */
+let _wakeLock=null, _wakeWant=false;
+async function wakeAcquire(){ _wakeWant=true; try{ if('wakeLock' in navigator && document.visibilityState==='visible'){ _wakeLock=await navigator.wakeLock.request('screen'); if(_wakeLock&&_wakeLock.addEventListener) _wakeLock.addEventListener('release',()=>{_wakeLock=null;}); } }catch(e){} }
+function wakeRelease(){ _wakeWant=false; try{ if(_wakeLock) _wakeLock.release(); }catch(e){} _wakeLock=null; }
+document.addEventListener('visibilitychange',()=>{ if(_wakeWant && document.visibilityState==='visible') wakeAcquire(); });
 function startTracking(kind, resume){
   if(!navigator.geolocation){ alert('GPS isn\u2019t available on this device. Use \u201Clog minutes\u201D instead.'); return; }
   track={kind, dist:resume?resume.dist:0, elapsed:resume?resume.elapsed:0, last:resume?resume.last:null,
@@ -654,10 +751,9 @@ function startTracking(kind, resume){
   document.querySelectorAll('.takeover,.finish').forEach(n=>n.remove());
   root.appendChild(node);
   $('trkCancel').onclick=async()=>{ stopTracking(); await DB.set('activeTrack',null); $('trk').remove(); track=null; renderApp('today'); };
-  $('trkPause').onclick=()=>{ track.paused=!track.paused; $('trkPause').textContent=track.paused?'Resume':'Pause'; $('trkStatus').textContent=`${track.kind} \u00B7 ${track.paused?'paused':'recording'}`; if(track.paused) relWake(); else reqWake(); };
+  $('trkPause').onclick=()=>{ track.paused=!track.paused; $('trkPause').textContent=track.paused?'Resume':'Pause'; $('trkStatus').textContent=`${track.kind} \u00B7 ${track.paused?'paused':'recording'}`; if(track.paused) wakeRelease(); else wakeAcquire(); };
   $('trkFinish').onclick=finishTracking;
-  reqWake();
-  document.addEventListener('visibilitychange', onVisible);
+  wakeAcquire();
   track.timer=setInterval(()=>{ if(!track||track.paused) return; track.elapsed+=1000; const t=$('trkTime'); if(t)t.textContent=fmtClock(track.elapsed); if(track.elapsed%5000<1000) persistTrack(); },1000);
   track.watchId=navigator.geolocation.watchPosition(onPos, onPosErr, {enableHighAccuracy:true, maximumAge:1000, timeout:15000});
 }
@@ -673,7 +769,7 @@ function onPos(pos){
   persistTrack();
 }
 function onPosErr(e){ const s=$('trkStatus'); if(s) s.textContent=`${track.kind} \u00B7 GPS blocked \u2014 allow location`; }
-function stopTracking(){ if(!track) return; if(track.watchId!=null) navigator.geolocation.clearWatch(track.watchId); clearInterval(track.timer); relWake(); document.removeEventListener('visibilitychange', onVisible); }
+function stopTracking(){ if(!track) return; if(track.watchId!=null) navigator.geolocation.clearWatch(track.watchId); clearInterval(track.timer); wakeRelease(); }
 async function finishTracking(){
   if(!track) return; stopTracking();
   const mins=Math.max(1, Math.round(track.elapsed/60000));
@@ -707,47 +803,57 @@ function offerResume(saved){
 }
 
 /* ============================ WORKOUT FLOW ============================ */
-function startWorkout(){ const {type}=strengthSplit(); active={type, ex:buildSession(), i:0, started:Date.now()}; renderWorkout(); }
+function startWorkout(){ const {type}=strengthSplit(); active={type, ex:buildSession(), i:0, started:Date.now(), date:todayStr()}; wakeAcquire(); persistWorkout(); renderWorkout(); }
+async function persistWorkout(){ await DB.set('activeWorkout', active?{type:active.type,i:active.i,started:active.started,date:active.date,ex:active.ex}:null); }
+function offerResumeWorkout(aw){
+  const ov=document.createElement('div'); ov.className='ovl'; ov.id='rwOvl';
+  ov.innerHTML=`<div class="sheet">
+    <h3>Workout in progress</h3>
+    <div class="x-target" style="margin:2px 0 14px">${aw.type} \u00B7 exercise ${(aw.i||0)+1} of ${aw.ex.length} \u2014 picked up where you left off</div>
+    <button class="btn btn-primary btn-lg" id="rwResume">Resume workout</button>
+    <button class="btn btn-ghost" id="rwDiscard" style="margin-top:10px;border:none;color:var(--muted)">Discard</button>
+  </div>`;
+  root.appendChild(ov);
+  const close=()=>{const x=$('rwOvl');if(x)x.remove();};
+  $('rwResume').onclick=()=>{ close(); active=aw; wakeAcquire(); renderWorkout(); };
+  $('rwDiscard').onclick=async()=>{ close(); await DB.set('activeWorkout',null); };
+}
 function renderWorkout(){
   const a=active, e=a.ex[a.i], tot=a.ex.length;
-  const tl=e.type==='hold'?'seconds':e.type==='each'?'reps / side':'reps';
+  const phase=e.tag==='warmup'?'Warm-up stretch':e.tag==='shoulder'?'Shoulder warm-up':e.tag==='cooldown'?'Cool-down stretch':e.tag==='focus'?'Focus finisher':'Exercise '+(a.i+1);
+  const unit=e.type==='hold'?'seconds':e.type==='each'?'per side':'reps';
   const node=document.createElement('div'); node.className='takeover'; node.id='takeover';
   node.innerHTML=`<div class="to-head">
       <button class="btn-ghost" style="width:auto;padding:9px 14px;border-radius:10px;border:1px solid var(--line)" id="quitW">Quit</button>
       <div class="kicker">${a.type} \u00B7 ${a.i+1}/${tot}</div><div style="width:56px"></div></div>
-    <div class="to-progress"><div class="pf" style="width:${(a.i/tot)*100}%"></div></div>
+    <div class="to-progress"><div class="pf" style="width:${((a.i+1)/tot)*100}%"></div></div>
     <div class="to-body">
-      <div class="kicker">${e.tag==='warmup'?'Warm-up stretch':e.tag==='shoulder'?'Shoulder warm-up':e.tag==='cooldown'?'Cool-down stretch':e.tag==='focus'?'Focus finisher':'Exercise '+(a.i+1)}</div>
+      <div class="kicker">${phase}</div>
       <div class="x-name">${e.name}</div>
-      <div class="x-target">${e.sets} sets \u00B7 ${e.type==='hold'?e.target+'s hold':e.type==='each'?e.target+' / side':e.target+' reps'}</div>
-      <div class="exdia-wrap">${diaFor(e.id)}</div>
+      <div class="exdia-wrap">${animDia(e.id)}</div>
+      <div class="repbig"><span class="rep-n">${e.target}</span><span class="rep-u">${unit}</span></div>
+      <div class="rep-sets">${e.sets>1?e.sets+' rounds \u00B7 rest as you need':'take your time'}</div>
       <div class="x-cue">${e.cue}</div>
-      <div class="setlist">${e.log.map((s,si)=>`<div class="setrow ${s.done?'done':''}" data-si="${si}"><div class="sidx">SET ${si+1}</div><input type="number" inputmode="numeric" value="${s.val}" data-si="${si}"><div class="unit">${tl}</div><div class="chk" data-si="${si}"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div></div>`).join('')}</div>
     </div>
-    <div class="to-foot"><button class="btn btn-primary btn-lg" id="nextEx">${a.i<tot-1?'Next \u2192':'Finish \u2713'}</button></div>`;
+    <div class="to-foot" style="display:flex;gap:12px">
+      ${a.i>0?'<button class="btn btn-ghost" id="prevEx" style="flex:0 0 32%">\u2039 Back</button>':''}
+      <button class="btn btn-primary btn-lg" id="nextEx" style="flex:1">${a.i<tot-1?'Next \u2192':'Finish \u2713'}</button>
+    </div>`;
   document.querySelectorAll('.takeover,.finish').forEach(n=>n.remove());
   root.appendChild(node);
-  node.querySelectorAll('input').forEach(inp=>inp.oninput=()=>{ e.log[+inp.dataset.si].val=inp.value; });
-  node.querySelectorAll('.chk').forEach(c=>c.onclick=()=>{ const si=+c.dataset.si,s=e.log[si]; s.done=!s.done; c.closest('.setrow').classList.toggle('done',s.done); if(s.done&&si<e.log.length-1) showRest(45); });
-  $('quitW').onclick=()=>{ if(confirm('Quit this session? It won\u2019t be saved.')){ active=null; $('takeover').remove(); renderApp('today'); } };
-  $('nextEx').onclick=()=>{ if(a.i<tot-1){ a.i++; showRest(60, renderWorkout); } else finishWorkout(); };
-}
-function showRest(sec, after){
-  const ov=document.createElement('div'); ov.className='rest'; ov.id='rest'; let t=sec;
-  ov.innerHTML=`<div class="lab">Rest</div><div class="clock" id="rc">${t}</div><div class="ctrls"><button id="r15">+15s</button><button id="rskip">Skip \u2192</button></div>`;
-  ($('takeover')||root).appendChild(ov);
-  clearInterval(restTimer); restTimer=setInterval(()=>{ t--; const rc=$('rc'); if(rc)rc.textContent=t; if(t<=0) done(); },1000);
-  function done(){ clearInterval(restTimer); const r=$('rest'); if(r)r.remove(); if(after)after(); }
-  $('r15').onclick=()=>{ t+=15; $('rc').textContent=t; }; $('rskip').onclick=done;
+  $('quitW').onclick=async()=>{ if(confirm('Quit this session? It won\u2019t be saved.')){ wakeRelease(); await DB.set('activeWorkout',null); active=null; const t=$('takeover'); if(t)t.remove(); renderApp('today'); } };
+  if(a.i>0) $('prevEx').onclick=()=>{ a.i--; persistWorkout(); renderWorkout(); };
+  $('nextEx').onclick=()=>{ e.log.forEach(s=>s.done=true); if(a.i<tot-1){ a.i++; persistWorkout(); renderWorkout(); } else finishWorkout(); };
 }
 async function finishWorkout(){
-  clearInterval(restTimer); const a=active;
+  clearInterval(restTimer); wakeRelease(); const a=active;
   const cs=a.ex.reduce((n,e)=>n+e.log.filter(s=>s.done).length,0);
   const reps=a.ex.reduce((n,e)=>n+e.log.filter(s=>s.done).reduce((m,s)=>m+(parseInt(s.val)||0),0),0);
   const mins=Math.max(1,Math.round((Date.now()-a.started)/60000));
   S.history.unshift({date:todayStr(), type:a.type, sets:cs, reps, mins});
   await DB.set('history',S.history);
   S.rotation++; await DB.set('rotation',S.rotation);
+  await DB.set('activeWorkout',null);
   const fin=document.createElement('div'); fin.className='finish'; fin.id='finish';
   fin.innerHTML=`<div class="ring"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
     <div class="kicker">${a.type} complete</div><div class="big2">Done & dusted.</div>
